@@ -19,10 +19,10 @@ def compute_and_plot_06(cg, pcg, m, mul_A, mul_pre, tol, maxit):
 
     A = 4.0 * np.eye(n) - (np.diag(np.ones(n-1), k=-1) + np.diag(np.ones(n-1), k=1))
     A -= (np.diag(np.ones(n - m), k = m) + np.diag(np.ones(n - m), k = -m))
-    ref_solution = np.linalg.solve(A, b)
+    ref_solution = np.linalg.solve(A, -1*b)
 
-    cg_iterates,  cg_residuals = cg(b, mul_A, tol, maxit)
-    pcg_iterates, pcg_residuals = pcg(b, mul_A, mul_pre, tol, maxit)
+    cg_iterates,  cg_gradient_norms = cg(b, mul_A, tol, maxit)
+    pcg_iterates, pcg_gradient_norms = pcg(b, mul_A, mul_pre, tol, maxit)
 
     err_cg  = norm(cg_iterates  - ref_solution, axis=1)
     err_pcg = norm(pcg_iterates - ref_solution, axis=1)
@@ -41,9 +41,9 @@ def compute_and_plot_06(cg, pcg, m, mul_A, mul_pre, tol, maxit):
     plt.legend(['cg','pcg'])
 
     plt.subplot(122)
-    plt.title('Norm der Residuen', fontsize=16)
-    plt.semilogy(cg_residuals,  'b-', linewidth=2)
-    plt.semilogy(pcg_residuals, 'r-', linewidth=2)
+    plt.title('Norm der Gradienten', fontsize=16)
+    plt.semilogy(cg_gradient_norms,  'b-', linewidth=2)
+    plt.semilogy(pcg_gradient_norms, 'r-', linewidth=2)
     plt.xlabel('Iteration $k$', fontsize=14)
     plt.ylabel('$\\|\\nabla f(x^{(k)})\\|$', fontsize=14)
     plt.legend(['cg', 'pcg'])
